@@ -1,6 +1,22 @@
 {
   "products": [
     {
+      "id": "1234567",
+      "title": "Apple iPhone 14 Pro",
+      "description": "The latest iPhone with A16 Bionic chip and ProMotion technology.",
+      "brand": "Apple",
+      "category": "Smartphones",
+      "price": 999.99,
+      "discountPercentage": 10,
+      "rating": 4.8,
+      "comments": "Amazing camera quality and performance.",
+      "images": [
+        "https://example.com/images/iphone14pro-1.jpg",
+        "https://example.com/images/iphone14pro-2.jpg",
+        "https://example.com/images/iphone14pro-3.jpg"
+      ]
+    },
+    {
       "id": "2345678",
       "title": "Samsung Galaxy S23 Ultra",
       "description": "Samsung’s flagship smartphone with an advanced camera system and powerful performance.",
@@ -28,6 +44,21 @@
       "images": [
         "https://example.com/images/wh1000xm5-1.jpg",
         "https://example.com/images/wh1000xm5-2.jpg"
+      ]
+    },
+    {
+      "id": "4567890",
+      "title": "Apple MacBook Pro 16-inch",
+      "description": "The ultimate laptop for professionals with the M2 Max chip and stunning Retina display.",
+      "brand": "Apple",
+      "category": "Laptops",
+      "price": 2499.99,
+      "discountPercentage": 8,
+      "rating": 4.9,
+      "comments": "Incredible performance for creative work.",
+      "images": [
+        "https://example.com/images/macbookpro16-1.jpg",
+        "https://example.com/images/macbookpro16-2.jpg"
       ]
     },
     {
@@ -106,48 +137,39 @@
       ]
     },
     {
-      "id": "g7cv58j51",
-      "title": "sqsx",
-      "description": "dccws",
-      "brand": "sdxcwds",
-      "category": "c sd",
-      "price": 6846,
-      "discountPercentage": 100,
-      "rating": 5,
-      "comments": "v escvw s",
-      "images": "vcwedscwsec"
-    },
-    {
-      "id": "7q2ngsz9b",
-      "title": "cawe",
-      "description": "cawe",
-      "brand": "cawe",
-      "category": "cawe",
-      "price": 684,
-      "discountPercentage": 4.2,
-      "rating": 5,
-      "comments": "cawe",
-      "images": "cawe"
+      "id": "0123456",
+      "title": "GoPro HERO11 Black",
+      "description": "Rugged 4K action camera with HyperSmooth stabilization and live streaming.",
+      "brand": "GoPro",
+      "category": "Cameras",
+      "price": 399.99,
+      "discountPercentage": 15,
+      "rating": 4.6,
+      "comments": "Perfect for capturing adventures in high quality.",
+      "images": [
+        "https://example.com/images/goprohero11-1.jpg",
+        "https://example.com/images/goprohero11-2.jpg"
+      ]
     }
   ],
   "users": [
     {
-      "id": "6fn6e7asn",
-      "firstName": "John",
+      "firstName": "nn",
       "lastName": "Doe",
       "email": "johndoe@gmail.com",
       "username": "johndoe",
       "password": "john1234",
-      "phone": "+998901234567"
+      "phone": "+998901234567",
+      "id": "0123456"
     },
     {
-      "id": "6fn6e76sk",
-      "firstName": "Jack",
-      "lastName": "Grealish",
-      "email": "jackG12gmail.com",
-      "username": "Grealish",
-      "password": "Jack",
-      "phone": "+99897456654"
+      "firstName": "a",
+      "lastName": "a",
+      "email": "aa@aa",
+      "username": "a",
+      "password": "a",
+      "phone": "a",
+      "id": "ef39V-J"
     }
   ]
 }

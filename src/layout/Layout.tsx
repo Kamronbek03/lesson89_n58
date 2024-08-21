@@ -10,21 +10,32 @@ import { useTranslation } from "react-i18next";
 const { Header, Sider, Content } = Layout;
 
 const LayoutComponent: React.FC = () => {
-  const { t, i18n } = useTranslation(); // Tarjima funksiyasi
+  const { t, i18n } = useTranslation();
   const [collapsed, setCollapsed] = useState(false);
   const {
     token: { colorBgContainer, borderRadiusLG },
   } = theme.useToken();
 
+  // Menu uchun yangi usul
+  const menuItems = [
+    {
+      key: "1",
+      label: <Link to="/profile">{t("profile")}</Link>,
+    },
+    {
+      key: "2",
+      label: <Button>{t("logout")}</Button>,
+    },
+  ];
+
+  // Dropdown uchun yangi usul
   const menu = (
-    <Menu>
-      <Menu.Item key="1">
-        <Link to="/profile">{t("profile")}</Link>
-      </Menu.Item>
-      <Menu.Item key="2">
-        <Button>{t("logout")}</Button>
-      </Menu.Item>
-    </Menu>
+    <Menu
+      items={menuItems.map((item) => ({
+        key: item.key,
+        label: item.label,
+      }))}
+    />
   );
 
   const handleChangeLanguage = (value: string) => {
@@ -83,7 +94,7 @@ const LayoutComponent: React.FC = () => {
             padding: 24,
             background: colorBgContainer,
             borderRadius: borderRadiusLG,
-            minHeight: "calc(100vh - 112px)", // Header and margin are considered
+            minHeight: "calc(100vh - 112px)",
           }}
         >
           <Outlet />
