@@ -1,14 +1,16 @@
 import React, { useState } from "react";
 import { MenuFoldOutlined, MenuUnfoldOutlined } from "@ant-design/icons";
-import { Button, Dropdown, Layout, Menu, Space, theme } from "antd";
+import { Button, Dropdown, Layout, Menu, Space, theme, Select } from "antd";
 import { Outlet, Link } from "react-router-dom";
 import { HiChartPie } from "react-icons/hi";
 import { FaUsers, FaUserCircle } from "react-icons/fa";
 import { AiOutlineProduct } from "react-icons/ai";
+import { useTranslation } from "react-i18next";
 
 const { Header, Sider, Content } = Layout;
 
 const LayoutComponent: React.FC = () => {
+  const { t, i18n } = useTranslation(); // Tarjima funksiyasi
   const [collapsed, setCollapsed] = useState(false);
   const {
     token: { colorBgContainer, borderRadiusLG },
@@ -17,13 +19,17 @@ const LayoutComponent: React.FC = () => {
   const menu = (
     <Menu>
       <Menu.Item key="1">
-        <Link to="/profile">Profile</Link>
+        <Link to="/profile">{t("profile")}</Link>
       </Menu.Item>
       <Menu.Item key="2">
-        <Button>Logout</Button>
+        <Button>{t("logout")}</Button>
       </Menu.Item>
     </Menu>
   );
+
+  const handleChangeLanguage = (value: string) => {
+    i18n.changeLanguage(value);
+  };
 
   return (
     <Layout className="min-h-screen">
@@ -35,13 +41,13 @@ const LayoutComponent: React.FC = () => {
         </Link>
         <Menu theme="dark" mode="inline" defaultSelectedKeys={["1"]}>
           <Menu.Item key="1" icon={<HiChartPie size={20} />}>
-            <Link to="/">Dashboard</Link>
+            <Link to="/">{t("dashboard")}</Link>
           </Menu.Item>
           <Menu.Item key="2" icon={<FaUsers size={20} />}>
-            <Link to="/users">Users</Link>
+            <Link to="/users">{t("users")}</Link>
           </Menu.Item>
           <Menu.Item key="3" icon={<AiOutlineProduct size={20} />}>
-            <Link to="/products">Products</Link>
+            <Link to="/products">{t("products")}</Link>
           </Menu.Item>
         </Menu>
       </Sider>
@@ -55,11 +61,21 @@ const LayoutComponent: React.FC = () => {
             icon={collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
             onClick={() => setCollapsed(!collapsed)}
           />
-          <Dropdown overlay={menu} trigger={["click"]}>
-            <Space>
+          <Space>
+            <Select
+              defaultValue="en"
+              style={{ width: 120 }}
+              onChange={handleChangeLanguage}
+              options={[
+                { value: "en", label: "English" },
+                { value: "ru", label: "Русский" },
+                { value: "uz", label: "O'zbekcha" },
+              ]}
+            />
+            <Dropdown overlay={menu} trigger={["click"]}>
               <FaUserCircle size={24} />
-            </Space>
-          </Dropdown>
+            </Dropdown>
+          </Space>
         </Header>
         <Content
           style={{

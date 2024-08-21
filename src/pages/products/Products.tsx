@@ -15,7 +15,12 @@ import {
   DialogContent,
   DialogActions,
   Pagination,
+  MenuItem,
+  Select,
+  InputLabel,
+  FormControl,
 } from "@mui/material";
+import { useTranslation } from "react-i18next";
 
 interface Product {
   id: string;
@@ -31,6 +36,7 @@ interface Product {
 }
 
 const Products: React.FC = () => {
+  const { t } = useTranslation();
   const {
     loading,
     products,
@@ -41,6 +47,9 @@ const Products: React.FC = () => {
     deleteProduct,
   } = useProductStore();
 
+  const [searchQuery, setSearchQuery] = useState("");
+  const [categoryFilter, setCategoryFilter] = useState("All");
+  const [sortOption, setSortOption] = useState("default");
   const [newProduct, setNewProduct] = useState<Omit<Product, "id">>({
     title: "",
     description: "",
@@ -64,11 +73,10 @@ const Products: React.FC = () => {
 
   const handleAddOrUpdateProduct = () => {
     if (editProduct) {
-      // Update existing product
       updateProduct(editProduct.id, { ...newProduct });
       setEditProduct(null);
     } else {
-      addProduct(newProduct); // ID avtomatik tarzda beriladi
+      addProduct(newProduct);
     }
     resetProductForm();
   };
@@ -99,10 +107,6 @@ const Products: React.FC = () => {
     setPage(value);
   };
 
-  const startIndex = (page - 1) * rowsPerPage;
-  const endIndex = startIndex + rowsPerPage;
-  const paginatedProducts = products.slice(startIndex, endIndex);
-
   const isFormValid = () => {
     return (
       newProduct.title.trim() !== "" &&
@@ -112,22 +116,77 @@ const Products: React.FC = () => {
     );
   };
 
+  const filteredProducts = products
+    .filter(
+      (product) =>
+        product.title.toLowerCase().includes(searchQuery.toLowerCase()) &&
+        (categoryFilter === "All" || product.category === categoryFilter)
+    )
+    .sort((a, b) => {
+      if (sortOption === "priceAsc") return a.price - b.price;
+      if (sortOption === "priceDesc") return b.price - a.price;
+      return 0; // No sorting by default
+    });
+
+  const startIndex = (page - 1) * rowsPerPage;
+  const endIndex = startIndex + rowsPerPage;
+  const paginatedProducts = filteredProducts.slice(startIndex, endIndex);
+
   return (
     <div style={{ padding: "20px", overflowY: "auto" }}>
-      <h2>Products</h2>
-      {loading && <h2>Loading...</h2>}
+      <h2>{t("productsTitle")}</h2>
+      {loading && <h2>{t("loading")}</h2>}
       {error && <h2>{error}</h2>}
+
+      <div style={{ display: "flex", gap: "10px", marginBottom: "20px" }}>
+        <TextField
+          label={t("searchByTitle")}
+          variant="outlined"
+          fullWidth
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+        />
+
+        <FormControl variant="outlined" style={{ minWidth: 200 }}>
+          <InputLabel>{t("filterByCategory")}</InputLabel>
+          <Select
+            value={categoryFilter}
+            onChange={(e) => setCategoryFilter(e.target.value)}
+            label={t("filterByCategory")}
+          >
+            <MenuItem value="All">{t("all")}</MenuItem>
+            <MenuItem value="Headphones">{t("headphones")}</MenuItem>
+            <MenuItem value="Smartwatches">{t("smartwatches")}</MenuItem>
+            <MenuItem value="Gaming Consoles">{t("gamingConsoles")}</MenuItem>
+            <MenuItem value="Laptops">{t("laptops")}</MenuItem>
+            <MenuItem value="Smartphones">{t("smartphones")}</MenuItem>
+          </Select>
+        </FormControl>
+
+        <FormControl variant="outlined" style={{ minWidth: 200 }}>
+          <InputLabel>{t("sortByPrice")}</InputLabel>
+          <Select
+            value={sortOption}
+            onChange={(e) => setSortOption(e.target.value)}
+            label={t("sortByPrice")}
+          >
+            <MenuItem value="default">{t("default")}</MenuItem>
+            <MenuItem value="priceAsc">{t("priceAsc")}</MenuItem>
+            <MenuItem value="priceDesc">{t("priceDesc")}</MenuItem>
+          </Select>
+        </FormControl>
+      </div>
 
       <TableContainer component={Paper}>
         <Table>
           <TableHead>
             <TableRow>
               <TableCell>№</TableCell>
-              <TableCell>Title</TableCell>
-              <TableCell>Brand</TableCell>
-              <TableCell>Category</TableCell>
-              <TableCell>Price</TableCell>
-              <TableCell>Actions</TableCell>
+              <TableCell>{t("title")}</TableCell>
+              <TableCell>{t("brand")}</TableCell>
+              <TableCell>{t("category")}</TableCell>
+              <TableCell>{t("price")}</TableCell>
+              <TableCell>{t("actions")}</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -194,7 +253,7 @@ const Products: React.FC = () => {
                         color="success"
                         onClick={() => handleAddOrUpdateProduct()}
                       >
-                        Save
+                        {t("save")}
                       </Button>
                       <Button
                         variant="contained"
@@ -204,7 +263,7 @@ const Products: React.FC = () => {
                           resetProductForm();
                         }}
                       >
-                        Cancel
+                        {t("cancel")}
                       </Button>
                     </div>
                   ) : (
@@ -227,14 +286,14 @@ const Products: React.FC = () => {
                           });
                         }}
                       >
-                        Edit
+                        {t("edit")}
                       </Button>
                       <Button
                         variant="contained"
                         color="secondary"
                         onClick={() => setDeleteConfirm(product.id)}
                       >
-                        Delete
+                        {t("delete")}
                       </Button>
                     </div>
                   )}
@@ -250,7 +309,7 @@ const Products: React.FC = () => {
                     onChange={(e) =>
                       setNewProduct({ ...newProduct, title: e.target.value })
                     }
-                    label="Title"
+                    label={t("title")}
                     fullWidth
                   />
                 </TableCell>
@@ -260,7 +319,7 @@ const Products: React.FC = () => {
                     onChange={(e) =>
                       setNewProduct({ ...newProduct, brand: e.target.value })
                     }
-                    label="Brand"
+                    label={t("brand")}
                     fullWidth
                   />
                 </TableCell>
@@ -270,7 +329,7 @@ const Products: React.FC = () => {
                     onChange={(e) =>
                       setNewProduct({ ...newProduct, category: e.target.value })
                     }
-                    label="Category"
+                    label={t("category")}
                     fullWidth
                   />
                 </TableCell>
@@ -281,7 +340,7 @@ const Products: React.FC = () => {
                     onChange={(e) =>
                       setNewProduct({ ...newProduct, price: +e.target.value })
                     }
-                    label="Price"
+                    label={t("price")}
                     fullWidth
                   />
                 </TableCell>
@@ -292,7 +351,7 @@ const Products: React.FC = () => {
                     onClick={() => handleAddOrUpdateProduct()}
                     disabled={!isFormValid()}
                   >
-                    Add Product
+                    {t("addProduct")}
                   </Button>
                 </TableCell>
               </TableRow>
@@ -302,7 +361,7 @@ const Products: React.FC = () => {
       </TableContainer>
 
       <Pagination
-        count={Math.ceil(products.length / rowsPerPage)}
+        count={Math.ceil(filteredProducts.length / rowsPerPage)}
         page={page}
         onChange={handlePageChange}
         style={{ marginTop: "20px" }}
@@ -310,19 +369,19 @@ const Products: React.FC = () => {
 
       {deleteConfirm && (
         <Dialog open={!!deleteConfirm} onClose={() => setDeleteConfirm(null)}>
-          <DialogTitle>Confirm Delete</DialogTitle>
+          <DialogTitle>{t("confirmDeleteProduct")}</DialogTitle>
           <DialogContent>
-            <p>Are you sure you want to delete this product?</p>
+            <p>{t("deleteProductWarning")}</p>
           </DialogContent>
           <DialogActions>
+            <Button onClick={() => setDeleteConfirm(null)} color="primary">
+              {t("cancel")}
+            </Button>
             <Button
               onClick={() => handleDeleteProduct(deleteConfirm)}
-              color="primary"
+              color="secondary"
             >
-              Delete
-            </Button>
-            <Button onClick={() => setDeleteConfirm(null)} color="secondary">
-              Cancel
+              {t("delete")}
             </Button>
           </DialogActions>
         </Dialog>

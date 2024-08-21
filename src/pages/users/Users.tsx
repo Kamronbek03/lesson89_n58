@@ -16,11 +16,14 @@ import {
   DialogContent,
   DialogActions,
 } from "@mui/material";
+import { useTranslation } from "react-i18next";
 
 const Users: React.FC = () => {
   const { loading, users, error, fetchUsers, addUser, updateUser, deleteUser } =
     useUserStore();
+  const { t } = useTranslation();
 
+  const [searchQuery, setSearchQuery] = useState("");
   const [newUser, setNewUser] = useState({
     firstName: "",
     lastName: "",
@@ -74,27 +77,42 @@ const Users: React.FC = () => {
     setPage(value);
   };
 
+  const filteredUsers = users.filter((user) =>
+    `${user.firstName} ${user.lastName}`
+      .toLowerCase()
+      .includes(searchQuery.toLowerCase())
+  );
+
   const startIndex = (page - 1) * rowsPerPage;
   const endIndex = startIndex + rowsPerPage;
-  const paginatedUsers = users.slice(startIndex, endIndex);
+  const paginatedUsers = filteredUsers.slice(startIndex, endIndex);
 
   return (
     <div style={{ padding: "20px", overflowY: "auto" }}>
-      <h2>Users</h2>
-      {loading && <h2>Loading...</h2>}
+      <h2>{t("usersTitle")}</h2>
+      {loading && <h2>{t("loading")}</h2>}
       {error && <h2>{error}</h2>}
+
+      <TextField
+        label={t("searchByName")}
+        variant="outlined"
+        fullWidth
+        margin="normal"
+        value={searchQuery}
+        onChange={(e) => setSearchQuery(e.target.value)}
+      />
 
       <TableContainer component={Paper}>
         <Table>
           <TableHead>
             <TableRow>
               <TableCell>№</TableCell>
-              <TableCell>First Name</TableCell>
-              <TableCell>Last Name</TableCell>
-              <TableCell>Email</TableCell>
-              <TableCell>Username</TableCell>
-              <TableCell>Phone</TableCell>
-              <TableCell>Actions</TableCell>
+              <TableCell>{t("firstName")}</TableCell>
+              <TableCell>{t("lastName")}</TableCell>
+              <TableCell>{t("email")}</TableCell>
+              <TableCell>{t("username")}</TableCell>
+              <TableCell>{t("phone")}</TableCell>
+              <TableCell>{t("actions")}</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -124,14 +142,14 @@ const Users: React.FC = () => {
                         setOpenModal(true);
                       }}
                     >
-                      Edit
+                      {t("edit")}
                     </Button>
                     <Button
                       variant="contained"
                       color="secondary"
                       onClick={() => setDeleteConfirm(user.id)}
                     >
-                      Delete
+                      {t("delete")}
                     </Button>
                   </div>
                 </TableCell>
@@ -147,11 +165,11 @@ const Users: React.FC = () => {
         style={{ marginTop: "20px" }}
         onClick={() => setOpenModal(true)}
       >
-        Add User
+        {t("addUser")}
       </Button>
 
       <Pagination
-        count={Math.ceil(users.length / rowsPerPage)}
+        count={Math.ceil(filteredUsers.length / rowsPerPage)}
         page={page}
         onChange={handlePageChange}
         style={{ marginTop: "20px" }}
@@ -159,10 +177,10 @@ const Users: React.FC = () => {
 
       {/* Add/Edit User Modal */}
       <Dialog open={openModal} onClose={() => setOpenModal(false)}>
-        <DialogTitle>{editUser ? "Edit User" : "Add New User"}</DialogTitle>
+        <DialogTitle>{editUser ? t("editUser") : t("addNewUser")}</DialogTitle>
         <DialogContent>
           <TextField
-            label="First Name"
+            label={t("firstName")}
             value={newUser.firstName}
             onChange={(e) =>
               setNewUser({ ...newUser, firstName: e.target.value })
@@ -171,7 +189,7 @@ const Users: React.FC = () => {
             margin="dense"
           />
           <TextField
-            label="Last Name"
+            label={t("lastName")}
             value={newUser.lastName}
             onChange={(e) =>
               setNewUser({ ...newUser, lastName: e.target.value })
@@ -180,14 +198,14 @@ const Users: React.FC = () => {
             margin="dense"
           />
           <TextField
-            label="Email"
+            label={t("email")}
             value={newUser.email}
             onChange={(e) => setNewUser({ ...newUser, email: e.target.value })}
             fullWidth
             margin="dense"
           />
           <TextField
-            label="Username"
+            label={t("username")}
             value={newUser.username}
             onChange={(e) =>
               setNewUser({ ...newUser, username: e.target.value })
@@ -196,7 +214,7 @@ const Users: React.FC = () => {
             margin="dense"
           />
           <TextField
-            label="Password"
+            label={t("password")}
             value={newUser.password}
             onChange={(e) =>
               setNewUser({ ...newUser, password: e.target.value })
@@ -206,7 +224,7 @@ const Users: React.FC = () => {
             margin="dense"
           />
           <TextField
-            label="Phone"
+            label={t("phone")}
             value={newUser.phone}
             onChange={(e) => setNewUser({ ...newUser, phone: e.target.value })}
             fullWidth
@@ -215,7 +233,7 @@ const Users: React.FC = () => {
         </DialogContent>
         <DialogActions>
           <Button onClick={() => setOpenModal(false)} color="secondary">
-            Cancel
+            {t("cancel")}
           </Button>
           <Button
             onClick={handleAddOrUpdateUser}
@@ -231,26 +249,26 @@ const Users: React.FC = () => {
               )
             }
           >
-            {editUser ? "Update User" : "Add User"}
+            {editUser ? t("updateUser") : t("addUser")}
           </Button>
         </DialogActions>
       </Dialog>
 
       {deleteConfirm && (
         <Dialog open={true} onClose={() => setDeleteConfirm(null)}>
-          <DialogTitle>Are you sure you want to delete this user?</DialogTitle>
+          <DialogTitle>{t("confirmDeleteUser")}</DialogTitle>
           <DialogContent>
-            <p>This action cannot be undone.</p>
+            <p>{t("deleteUserWarning")}</p>
           </DialogContent>
           <DialogActions>
             <Button onClick={() => setDeleteConfirm(null)} color="primary">
-              Cancel
+              {t("cancel")}
             </Button>
             <Button
               onClick={() => handleDeleteUser(deleteConfirm)}
               color="secondary"
             >
-              Delete
+              {t("delete")}
             </Button>
           </DialogActions>
         </Dialog>
